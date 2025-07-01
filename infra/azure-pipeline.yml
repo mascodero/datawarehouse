@@ -37,6 +37,7 @@ stages:
         steps:
           - checkout: self
           - script: |
+              cd infra
               terraform init
-              terraform apply tfplan
+              terraform apply -var "subscription_id=$(subscription_id)" -var "client_id=$(client_id)" -var "client_secret=$(client_secret)" -var "tenant_id=$(tenant_id)" 
             displayName: 'Terraform Init and Apply'
