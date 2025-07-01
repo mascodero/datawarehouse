@@ -25,9 +25,9 @@ stages:
         steps:
           - checkout: self
           - script: |
+              cd infra
               terraform init
               terraform plan -var "subscription_id=$(subscription_id)" -var "client_id=$(client_id)" -var "client_secret=$(client_secret)" -var "tenant_id=$(tenant_id)" -out tfplan
-            working-directory: infra
             displayName: 'Terraform Init and Plan'
   - stage: Deploy
     displayName: 'Terraform Apply'
