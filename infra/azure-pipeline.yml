@@ -1,0 +1,41 @@
+#trigger:
+ # branches:
+  #  include:
+   #   - main
+
+trigger: none
+
+variables:
+  - group: terraform-auth
+
+pool: sma-pool-dev
+
+stages:
+  - stage: Plan
+    displayName: 'Terraform Plan'
+    jobs:
+      - job: terraform
+        displayName: 'terraform job'
+        steps:
+          - checkout: self
+          - script: |
+              terraform --version
+      - job: terraformPlan
+        displayName: 'Terraform Plan'
+        steps:
+          - checkout: self
+          - script: |
+              terraform init
+              terraform plan -var "subscription_id=$(subscription_id)" -var "client_id=$(client_id)" -var "client_secret=$(client_secret)" -var "tenant_id=$(tenant_id)" -out tfplan
+            displayName: 'Terraform Init and Plan'
+  - stage: Deploy
+    displayName: 'Terraform Apply'
+    jobs:
+      - job: TerraformApply
+        displayName: 'Terraform Apply'
+        steps:
+          - checkout: self
+          - script: |
+              terraform init
+              terraform apply tfplan
+            displayName: 'Terraform Init and Apply'
