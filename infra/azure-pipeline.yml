@@ -17,17 +17,16 @@ stages:
       - job: terraform
         displayName: 'terraform job'
         steps:
-          - checkout: self
+          - checkout: self/infra
           - script: |
               terraform --version
       - job: terraformPlan
         displayName: 'Terraform Plan'
         steps:
-          - checkout: self
+          - checkout: self/infra
           - script: |
               terraform init
               terraform plan -var "subscription_id=$(subscription_id)" -var "client_id=$(client_id)" -var "client_secret=$(client_secret)" -var "tenant_id=$(tenant_id)" -out tfplan
-            working-directory: /infra
             displayName: 'Terraform Init and Plan'
   - stage: Deploy
     displayName: 'Terraform Apply'
